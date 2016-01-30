@@ -104,7 +104,7 @@ def add_git_segment(powerline):
 
     def _add(_dict, _key, fg, bg):
         if _dict[_key]:
-            _str = u' {}{} '.format(_n_or_empty(_dict, _key), GIT_SYMBOLS[_key])
+            _str = u' {} {} '.format(_n_or_empty(_dict, _key), GIT_SYMBOLS[_key])
             powerline.append(_str, fg, bg)
 
     if branch_info:

@@ -3,8 +3,8 @@ class DefaultColor:
     This class should have the default colors for every segment.
     Please test every new segment with this theme first.
     """
-    USERNAME_FG = 250
-    USERNAME_BG = 240
+    USERNAME_FG = 31
+    USERNAME_BG = 235
     USERNAME_ROOT_BG = 124
 
     HOSTNAME_FG = 250
@@ -26,7 +26,7 @@ class DefaultColor:
 
     REPO_CLEAN_BG = 148  # a light green color
     REPO_CLEAN_FG = 0  # black
-    REPO_DIRTY_BG = 161  # pink/red
+    REPO_DIRTY_BG = 130  # pink/red
     REPO_DIRTY_FG = 15  # white
 
     JOBS_FG = 39
@@ -46,7 +46,7 @@ class DefaultColor:
     GIT_BEHIND_FG = 250
     GIT_STAGED_BG = 22
     GIT_STAGED_FG = 15
-    GIT_NOTSTAGED_BG = 130
+    GIT_NOTSTAGED_BG = 56
     GIT_NOTSTAGED_FG = 15
     GIT_UNTRACKED_BG = 52
     GIT_UNTRACKED_FG = 15

@@ -4,7 +4,7 @@ def add_username_segment(powerline):
     if powerline.args.shell == 'bash':
         user_prompt = ' \\u '
     elif powerline.args.shell == 'zsh':
-        user_prompt = ' %n '
+        user_prompt = u' \u2622 %n \u2622  '
     else:
         user_prompt = ' %s ' % os.getenv('USER')
 
