@@ -62,3 +62,4 @@ class Color(DefaultColor):
     Because the segments require a 'Color' class for every theme.
     """
     pass
+
