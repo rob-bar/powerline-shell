@@ -211,20 +211,7 @@ class Color(DefaultColor):
     pass
 
 
-import os
 
-def add_virtual_env_segment(powerline):
-    env = os.getenv('VIRTUAL_ENV') or os.getenv('CONDA_ENV_PATH')
-    if env is None:
-        return
-
-    env_name = os.path.basename(env)
-    bg = Color.VIRTUAL_ENV_BG
-    fg = Color.VIRTUAL_ENV_FG
-    powerline.append(' %s ' % env_name, fg, bg)
-
-
-add_virtual_env_segment(powerline)
 
 def add_username_segment(powerline):
     import os
@@ -244,6 +231,20 @@ def add_username_segment(powerline):
 
 
 add_username_segment(powerline)
+import subprocess
+
+
+def add_node_version_segment(powerline):
+    try:
+        p1 = subprocess.Popen(["node", "--version"], stdout=subprocess.PIPE)
+        version = p1.communicate()[0].decode("utf-8").rstrip()
+        version = " " + version + " "
+        powerline.append(version, 250, 53)
+    except OSError:
+        return
+
+
+add_node_version_segment(powerline)
 import os
 
 ELLIPSIS = u'\u2026'
@@ -252,7 +253,7 @@ ELLIPSIS = u'\u2026'
 def replace_home_dir(cwd):
     home = os.getenv('HOME')
     if cwd.startswith(home):
-        return '~' + cwd[len(home):]
+        return "~" + cwd[len(home):]
     return cwd
 
 
@@ -465,82 +466,15 @@ def add_git_segment(powerline):
     _add(stats, 'conflicted', Color.GIT_CONFLICTED_FG, Color.GIT_CONFLICTED_BG)
 
 
+
 add_git_segment(powerline)
-import os
-import subprocess
-
-def get_hg_status():
-    has_modified_files = False
-    has_untracked_files = False
-    has_missing_files = False
-
-    p = subprocess.Popen(['hg', 'status'], stdout=subprocess.PIPE)
-    output = p.communicate()[0].decode("utf-8")
-
-    for line in output.split('\n'):
-        if line == '':
-            continue
-        elif line[0] == '?':
-            has_untracked_files = True
-        elif line[0] == '!':
-            has_missing_files = True
-        else:
-            has_modified_files = True
-    return has_modified_files, has_untracked_files, has_missing_files
-
-def add_hg_segment(powerline):
-    branch = os.popen('hg branch 2> /dev/null').read().rstrip()
-    if len(branch) == 0:
-        return False
-    bg = Color.REPO_CLEAN_BG
-    fg = Color.REPO_CLEAN_FG
-    has_modified_files, has_untracked_files, has_missing_files = get_hg_status()
-    if has_modified_files or has_untracked_files or has_missing_files:
-        bg = Color.REPO_DIRTY_BG
-        fg = Color.REPO_DIRTY_FG
-        extra = ''
-        if has_untracked_files:
-            extra += '+'
-        if has_missing_files:
-            extra += '!'
-        branch += (' ' + extra if extra != '' else '')
-    return powerline.append(' %s ' % branch, fg, bg)
+def add_exit_code_segment(powerline):
+    if powerline.args.prev_error == 0:
+        return
+    fg = Color.CMD_FAILED_FG
+    bg = Color.CMD_FAILED_BG
+    powerline.append(' %s ' % str(powerline.args.prev_error), fg, bg)
 
 
-add_hg_segment(powerline)
-import os
-import re
-import subprocess
-
-def add_jobs_segment(powerline):
-    pppid_proc = subprocess.Popen(['ps', '-p', str(os.getppid()), '-oppid='],
-                                  stdout=subprocess.PIPE)
-    pppid = pppid_proc.communicate()[0].decode("utf-8").strip()
-
-    output_proc = subprocess.Popen(['ps', '-a', '-o', 'ppid'],
-                                   stdout=subprocess.PIPE)
-    output = output_proc.communicate()[0].decode("utf-8")
-
-    num_jobs = len(re.findall(str(pppid), output)) - 1
-
-    if num_jobs > 0:
-        powerline.append(' %d ' % num_jobs, Color.JOBS_FG, Color.JOBS_BG)
-
-
-add_jobs_segment(powerline)
-def add_root_segment(powerline):
-    root_indicators = {
-        'bash': ' \\$ ',
-        'zsh': ' %# ',
-        'bare': ' $ ',
-    }
-    bg = Color.CMD_PASSED_BG
-    fg = Color.CMD_PASSED_FG
-    if powerline.args.prev_error != 0:
-        fg = Color.CMD_FAILED_FG
-        bg = Color.CMD_FAILED_BG
-    powerline.append(root_indicators[powerline.args.shell], fg, bg)
-
-
-add_root_segment(powerline)
+add_exit_code_segment(powerline)
 sys.stdout.write(powerline.draw())
