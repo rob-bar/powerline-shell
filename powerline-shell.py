@@ -326,7 +326,7 @@ def add_cwd_segment(powerline):
     for i, name in enumerate(names):
         fg, bg = get_fg_bg(name)
 
-        separator = powerline.separator_thin
+        separator = "/"
         separator_fg = Color.SEPARATOR_FG
         is_last_dir = (i == len(names) - 1)
         if requires_special_home_display(name) or is_last_dir:
